@@ -10,8 +10,8 @@ import (
 type Scraper struct {
 }
 
-func (s *Scraper) ScrapeUrl(siteUrl, htmlSelector string, parser func(e *colly.HTMLElement) (interface{}, error)) ([]interface{}, error) {
-	var result []interface{}
+func (s *Scraper) ScrapeUrl(siteUrl, htmlSelector string, parser func(e *colly.HTMLElement) (interface{}, error)) (interface{}, error) {
+	var result interface{}
 	var err error
 
 	fmt.Println("Scraping website", siteUrl)
@@ -26,13 +26,15 @@ func (s *Scraper) ScrapeUrl(siteUrl, htmlSelector string, parser func(e *colly.H
 		colly.AllowedDomains(u.Host),
 	)
 
+	colly.CacheDir("./cache")
+
 	// c.OnHTML("*", func(e *colly.HTMLElement) {
 	// 	fmt.Println(e)
 	// })
 
 	c.OnHTML(htmlSelector, func(e *colly.HTMLElement) {
 		if parsed, err := parser(e); err == nil {
-			result = append(result, parsed)
+			result = parsed
 		}
 	})
 
