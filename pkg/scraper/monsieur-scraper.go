@@ -52,9 +52,15 @@ func parserfunc(e *colly.HTMLElement) (interface{}, error) {
 					Description: strings.TrimSpace(removeAccents(el.Text)),
 				}
 
-				if currDish != nil {
-					currDish.Ingredients = append(currDish.Ingredients, currIng)
+				if currDish == nil {
+					currDish = &models.Dish{
+						Title:       recTitle,
+						Ingredients: []models.Ingredient{},
+					}
+					r.Dishes = append(r.Dishes, currDish)
 				}
+
+				currDish.Ingredients = append(currDish.Ingredients, currIng)
 			}
 		})
 	})
